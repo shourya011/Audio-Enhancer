@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio Enhancer</title>
+  <link rel="stylesheet" href="./popup.css">
+</head>
+<body>
+  <div class="app-container" id="app">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 10v3"></path>
+            <path d="M6 6v11"></path>
+            <path d="M10 3v18"></path>
+            <path d="M14 8v7"></path>
+            <path d="M18 5v13"></path>
+            <path d="M22 10v4"></path>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 class="brand-title">Audio Enhancer</h1>
+          <span class="brand-badge">Local DSP</span>
+        </div>
+      </div>
+      <div class="header-status-pill" id="site-badge" aria-label="Target Platform">
+        <span class="status-dot"></span>
+        <span id="site-name">YouTube</span>
+      </div>
+    </header>
+
+    <!-- Error Banner (Hidden by default) -->
+    <div class="error-banner hidden" id="error-banner" role="alert" aria-live="assertive">
+      <div class="error-icon">⚠️</div>
+      <div class="error-content">
+        <div class="error-title" id="error-title">Capture Error</div>
+        <div class="error-msg" id="error-msg">Could not capture tab audio.</div>
+      </div>
+      <button class="error-action-btn" id="error-retry-btn" aria-label="Retry audio capture">Retry</button>
+    </div>
+
+    <!-- Hero Card: Master Toggle & Track Info -->
+    <section class="hero-card" aria-label="Master Enhancement Control">
+      <div class="hero-left">
+        <button class="power-toggle-btn" id="master-toggle-btn" aria-label="Toggle Audio Enhancement" aria-pressed="false">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+            <line x1="12" y1="2" x2="12" y2="12"></line>
+          </svg>
+        </button>
+        <div class="hero-status">
+          <div class="hero-status-label" id="master-status-text">Enhancement Inactive</div>
+          <div class="hero-track-title" id="hero-track-title" title="Open YouTube or YouTube Music to enhance">Ready on YouTube</div>
+        </div>
+      </div>
+      <button class="ab-compare-btn" id="ab-compare-btn" title="Instant A/B Bypass Comparison" aria-label="Instant A/B comparison bypass" aria-pressed="false">
+        <span class="ab-indicator"></span>
+        <span class="ab-text">A/B Bypass</span>
+      </button>
+    </section>
+
+    <!-- Visualizer / Spectrum Canvas -->
+    <section class="visualizer-card" aria-label="Real-time Audio Spectrum">
+      <div class="visualizer-header">
+        <span class="visualizer-label">Real-time Spectrum</span>
+        <div class="meter-container" title="Output Peak Headroom">
+          <span class="meter-label">Peak</span>
+          <div class="meter-bar-track">
+            <div class="meter-bar-fill" id="meter-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+      </div>
+      <canvas id="spectrum-canvas" width="328" height="42" class="spectrum-canvas"></canvas>
+    </section>
+
+    <!-- Preset Selector -->
+    <section class="section-card" aria-label="DSP Presets">
+      <div class="section-header">
+        <span class="section-title">DSP Preset</span>
+        <span class="preset-tagline" id="preset-tagline">All-Day Flagship</span>
+      </div>
+      <div class="presets-grid" id="presets-container" role="radiogroup" aria-label="Select audio preset">
+        <!-- Preset buttons dynamically injected or static -->
+      </div>
+    </section>
+
+    <!-- Intensity Slider -->
+    <section class="section-card" aria-label="Enhancement Intensity">
+      <div class="slider-header">
+        <label for="intensity-slider" class="section-title">Intensity</label>
+        <span class="slider-badge" id="intensity-value-badge">100%</span>
+      </div>
+      <div class="slider-row">
+        <span class="slider-bound-label">Subtle</span>
+        <input
+          type="range"
+          id="intensity-slider"
+          min="0"
+          max="100"
+          value="100"
+          step="1"
+          class="custom-slider"
+          aria-label="Enhancement Intensity (0 to 100%)"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="100"
+        />
+        <span class="slider-bound-label">Full</span>
+      </div>
+    </section>
+
+    <!-- Quick Trims Section (Collapsible) -->
+    <section class="section-card collapsible-card" id="trims-card">
+      <button class="collapsible-header" id="trims-toggle" aria-expanded="true" aria-controls="trims-body">
+        <span class="section-title">Quick Trims (±3 dB)</span>
+        <svg class="chevron-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+      <div class="collapsible-body" id="trims-body">
+        <!-- Bass Trim -->
+        <div class="trim-control">
+          <div class="trim-label-row">
+            <label for="trim-bass" class="trim-label">Bass Punch</label>
+            <span class="trim-val" id="trim-bass-val">0.0 dB</span>
+          </div>
+          <input type="range" id="trim-bass" min="-3" max="3" value="0" step="0.5" class="custom-slider trim-slider" aria-label="Bass Trim" />
+        </div>
+
+        <!-- Clarity Trim -->
+        <div class="trim-control">
+          <div class="trim-label-row">
+            <label for="trim-clarity" class="trim-label">Vocal Clarity</label>
+            <span class="trim-val" id="trim-clarity-val">0.0 dB</span>
+          </div>
+          <input type="range" id="trim-clarity" min="-3" max="3" value="0" step="0.5" class="custom-slider trim-slider" aria-label="Clarity Trim" />
+        </div>
+
+        <!-- Stereo Width Trim -->
+        <div class="trim-control">
+          <div class="trim-label-row">
+            <label for="trim-width" class="trim-label">Stereo Width</label>
+            <span class="trim-val" id="trim-width-val">0.0 dB</span>
+          </div>
+          <input type="range" id="trim-width" min="-3" max="3" value="0" step="0.5" class="custom-slider trim-slider" aria-label="Stereo Width Trim" />
+        </div>
+
+        <div class="trims-footer">
+          <button class="text-action-btn" id="reset-trims-btn">Reset Trims</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Advanced 5-Band EQ (Collapsible) -->
+    <section class="section-card collapsible-card collapsed" id="advanced-card">
+      <button class="collapsible-header" id="advanced-toggle" aria-expanded="false" aria-controls="advanced-body">
+        <span class="section-title">Advanced 5-Band EQ</span>
+        <svg class="chevron-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+      <div class="collapsible-body" id="advanced-body">
+        <div class="advanced-eq-grid">
+          <!-- Band 1: 100Hz -->
+          <div class="eq-band-col">
+            <span class="eq-band-val" id="eq-b1-val">0 dB</span>
+            <input type="range" id="eq-b1" min="-12" max="12" value="0" step="0.5" orient="vertical" class="eq-vertical-slider" aria-label="100 Hz Shelf Gain" />
+            <span class="eq-band-label">100Hz</span>
+          </div>
+          <!-- Band 2: 300Hz -->
+          <div class="eq-band-col">
+            <span class="eq-band-val" id="eq-b2-val">0 dB</span>
+            <input type="range" id="eq-b2" min="-12" max="12" value="0" step="0.5" orient="vertical" class="eq-vertical-slider" aria-label="300 Hz Low-Mid Gain" />
+            <span class="eq-band-label">300Hz</span>
+          </div>
+          <!-- Band 3: 3kHz -->
+          <div class="eq-band-col">
+            <span class="eq-band-val" id="eq-b3-val">0 dB</span>
+            <input type="range" id="eq-b3" min="-12" max="12" value="0" step="0.5" orient="vertical" class="eq-vertical-slider" aria-label="3 kHz Presence Gain" />
+            <span class="eq-band-label">3kHz</span>
+          </div>
+          <!-- Band 4: 6kHz -->
+          <div class="eq-band-col">
+            <span class="eq-band-val" id="eq-b4-val">0 dB</span>
+            <input type="range" id="eq-b4" min="-12" max="12" value="0" step="0.5" orient="vertical" class="eq-vertical-slider" aria-label="6 kHz High-Mid Gain" />
+            <span class="eq-band-label">6kHz</span>
+          </div>
+          <!-- Band 5: 12kHz -->
+          <div class="eq-band-col">
+            <span class="eq-band-val" id="eq-b5-val">0 dB</span>
+            <input type="range" id="eq-b5" min="-12" max="12" value="0" step="0.5" orient="vertical" class="eq-vertical-slider" aria-label="12 kHz Air Shelf Gain" />
+            <span class="eq-band-label">12kHz</span>
+          </div>
+        </div>
+
+        <div class="advanced-info-row">
+          <div class="info-tag">Headroom: <span class="tag-val">-4.0 dB</span></div>
+          <div class="info-tag">Compressor: <span class="tag-val" id="comp-status-text">Musical RMS</span></div>
+          <div class="info-tag">Limiter: <span class="tag-val">-1.0 dBFS</span></div>
+        </div>
+
+        <div class="trims-footer">
+          <button class="text-action-btn" id="reset-eq-btn">Reset EQ Overrides</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Status / Privacy -->
+    <footer class="app-footer">
+      <div class="footer-note" aria-live="polite" id="live-announcement">
+        100% Local Real-Time DSP • Zero Audio Telemetry
+      </div>
+    </footer>
+  </div>
+
+  <script type="module" src="./popup.ts"></script>
+</body>
+</html>

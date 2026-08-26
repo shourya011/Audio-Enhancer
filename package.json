@@ -1,0 +1,27 @@
+{
+  "name": "audio-enhancer",
+  "version": "1.0.0",
+  "description": "Real-time local DSP audio enhancement Chrome extension for YouTube and YouTube Music",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite build --watch --mode development",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src tests --ext .ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "generate-icons": "node scripts/generate-icons.js",
+    "package": "npm run build && node scripts/package.js"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.268",
+    "@types/node": "^20.14.0",
+    "@typescript-eslint/eslint-plugin": "^8.68.0",
+    "@typescript-eslint/parser": "^8.68.0",
+    "eslint": "^9.39.5",
+    "typescript": "^5.4.5",
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11"
+  }
+}
