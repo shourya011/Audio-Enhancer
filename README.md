@@ -11,7 +11,7 @@ Engineered around the core philosophy **"Better, not merely louder,"** Audio Enh
 
 ---
 
-## 🚫 Hard Constraints — What This Extension Does NOT Do
+## Hard Constraints — What This Extension Does NOT Do
 
 To comply strictly with browser security policies, copyright laws, and the Chrome Web Store Developer Program Policies:
 
@@ -24,7 +24,7 @@ To comply strictly with browser security policies, copyright laws, and the Chrom
 
 ---
 
-## 🎧 Presets & Sound Profiles
+## Presets & Sound Profiles
 
 | Preset | Icon | Tagline | Best For | Acoustic Description |
 |---|:---:|---|---|---|
@@ -38,7 +38,7 @@ To comply strictly with browser security policies, copyright laws, and the Chrom
 
 ---
 
-## 🚀 Quick Start Guide: Running the Project from Scratch
+## Quick Start Guide: Running the Project from Scratch
 
 ### 1. Prerequisites
 Ensure you have **Node.js** (v18 or higher, recommended v20+) and **npm** installed on your computer.
@@ -82,7 +82,7 @@ npm run build
 
 ---
 
-## 🎁 How to Share with a Friend (No Coding Required for Them)
+## How to Share with a Friend (No Coding Required for Them)
 
 Your friend does **not** need Node.js, npm, or any technical setup.
 
@@ -107,7 +107,7 @@ Send `audio-enhancer-v1.0.0.zip` to your friend via Discord, Telegram, WhatsApp,
 
 ---
 
-## 🛠️ Developer Commands Cheat Sheet
+## Developer Commands Cheat Sheet
 
 | Command | Description |
 |---|---|
@@ -121,7 +121,7 @@ Send `audio-enhancer-v1.0.0.zip` to your friend via Discord, Telegram, WhatsApp,
 
 ---
 
-## 🏗️ Architecture & Signal Chain
+## Architecture & Signal Chain
 
 ```
 [ Active YouTube Tab ]
@@ -153,7 +153,7 @@ Send `audio-enhancer-v1.0.0.zip` to your friend via Discord, Telegram, WhatsApp,
 
 ---
 
-## 🔒 Permissions & Privacy
+## Permissions & Privacy
 
 Audio Enhancer requests the absolute minimum permissions required to operate:
 
@@ -169,7 +169,7 @@ Read our complete [Privacy Policy](PRIVACY.md) and [Security Architecture](SECUR
 
 ---
 
-## ❓ Troubleshooting
+## Troubleshooting
 
 - **"Enhancement Inactive / Open YouTube":** Ensure that the active tab in your browser is on `youtube.com` or `music.youtube.com`.
 - **Audio sounds unchanged?** Make sure the master power toggle in the popup is active (turns green) and that the **A/B Bypass** button is disabled.
@@ -177,7 +177,7 @@ Read our complete [Privacy Policy](PRIVACY.md) and [Security Architecture](SECUR
 
 ---
 
-## 📄 Documentation Index
+## Documentation Index
 
 - [Architecture & DSP Pipeline](docs/architecture.md)
 - [Preset Tuning Log & Audio Rationale](docs/preset-tuning-log.md)
@@ -188,6 +188,6 @@ Read our complete [Privacy Policy](PRIVACY.md) and [Security Architecture](SECUR
 
 ---
 
-## ⚖️ License
+## License
 
 Distributed under the MIT License. See [LICENSE](LICENSE) for details.
